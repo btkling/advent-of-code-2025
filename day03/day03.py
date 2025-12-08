@@ -1,3 +1,9 @@
+## How would I optimize this further?
+
+# it already won't recurse if the battery it finds is smaller
+# but maybe you can chop the strings in half?
+# more manips like that
+
 import typer
 
 app = typer.Typer()
