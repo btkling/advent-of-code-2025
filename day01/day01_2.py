@@ -1,33 +1,52 @@
 import sys
 
-file = sys.argv[1]
-start = 50
-pwd = 0
+def get_pass(file):
+    start = 50
+    pwd = 0
+    with open(filename) as file:
+        linenum = 1
+        current_pos = start
+        for rotation in file:
+            rotation = rotation.strip()
 
-with open(file) as f:
-    for l in f:
-        combo = l.strip()
-        direction = combo[0]
-        amount = int(combo[1:len(combo)])
-        if direction == "L":
-            amount = -amount
+            direction = rotation[0]
+            rotation_as_int = int(rotation[1:len(rotation)])
 
-        end = start + amount
+            if direction == "L":
+                rotation_as_int = -rotation_as_int
 
-        while (end < 0) | (end > 99):
-            if end < 0:
-                end += 100
-            if end > 99:
-                end -= 100
+            zeros = 0
+            while abs(rotation_as_int) > 0:
+                # perform one tick of the rotation
+                if rotation_as_int < 0:
+                    current_pos -= 1
+                    rotation_as_int += 1
+                else:
+                    current_pos += 1
+                    rotation_as_int -= 1
 
-        print_stm = f"{start:3} | {amount:3} | {end:3}"
-        if end == 0:
-            pwd += 1
-            print_stm += "  <-- HIT!!!!!!!"
+                # eval current position
+                if (current_pos == 100): 
+                    current_pos = 0
+                if (current_pos == -1):
+                    current_pos = 99
+                if current_pos == 0:
+                    zeros += 1
+
+
+            print_stm = f"{linenum:5} | {start:3} + {rotation:>6} -> {current_pos:3}"
+            print_stm += f" | HITS: {zeros:3}"
+            linenum += 1
+
+            pwd += zeros
+            print_stm += f" | PWD: {pwd:5}"
             print(print_stm)
-        else:
-            print(print_stm)
 
-        start = end
+            start = current_pos
 
-print(f"The password is {pwd}")
+    print(f"The password is {pwd}")
+    return pwd
+
+if __name__ == "__main__":
+    filename = sys.argv[1]
+    get_pass(filename)
